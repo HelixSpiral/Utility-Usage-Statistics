@@ -4,10 +4,11 @@ package main
 
 import (
 	"fmt"
+	"time"
 )
 
 type PowerData struct {
-	date string
+	date time.Time
 	kWh  float64
 }
 
@@ -16,9 +17,11 @@ func main() {
 	var totalkWh float64
 	var totalDataPoints float64
 
-	for line := range data {
-		totalkWh += data[line].kWh
-		totalDataPoints += 1
+	for _, day := range data {
+		for _, hour := range day {
+			totalkWh += hour.kWh
+			totalDataPoints += 1
+		}
 	}
 
 	fmt.Println("Total kWh usage:", totalkWh)
