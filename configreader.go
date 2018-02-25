@@ -2,9 +2,9 @@ package main
 
 import (
 	"encoding/csv" // Needed for reading the power csv file
-	"os"
-	"strconv"
-	"time"
+	"os"           // Needed for os.Open
+	"strconv"      // Needed for converting kWh usage to float64
+	"time"         // Needed for time parsing
 )
 
 // Read the config file and return a slice of PowerData
@@ -27,12 +27,12 @@ func readData(powerFile string) [][]PowerData {
 	previousDay, _ = time.Parse("1/2/2006 3:04:05 PM", "1/1/1900 0:00:00 PM")
 	currentDay, _ = time.Parse("1/2/2006 3:04:05 PM", "1/1/1900 0:00:00 PM")
 
-// Loop for every line in the file
+	// Loop for every line in the file
 	for _, line := range lines {
-		kilowatt, _ := strconv.ParseFloat(line[1], 64) // Convert the kWh section to float64
+		kilowatt, _ := strconv.ParseFloat(line[1], 64)             // Convert the kWh section to float64
 		currentDay, _ = time.Parse("1/2/2006 3:04:05 PM", line[0]) // Convert date/time section to time.Time
 
-// If the current day IS the previous day continue appending data to that day
+		// If the current day IS the previous day continue appending data to that day
 		if ok := dateCheck(previousDay, currentDay); ok != false {
 			data[dayCount] = append(data[dayCount], PowerData{
 				date: currentDay.Format("2006-01-02"),

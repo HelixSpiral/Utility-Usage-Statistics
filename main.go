@@ -3,9 +3,7 @@
 
 package main
 
-import (
-	"fmt"
-)
+import "fmt"
 
 type PowerData struct {
 	date string
@@ -18,6 +16,9 @@ func main() {
 	var totalDataPoints float64
 	var totalDailykWh float64
 	var totalDays float64
+	var lowestDay string
+	var highestDay string
+	lowestDaykWh, highestDaykWh := 100.00, 0.0 // We default lowestDay to 100 and highestDay to 0
 	dailykWh := make(map[string]float64)
 
 	// Read the data from the csv
@@ -37,7 +38,17 @@ func main() {
 	}
 
 	// Loop for each day
-	for _, dailyusage := range dailykWh {
+	for day, dailyusage := range dailykWh {
+		if dailyusage > highestDaykWh {
+			highestDaykWh = dailyusage
+			highestDay = day
+		}
+
+		if dailyusage < lowestDaykWh {
+			lowestDaykWh = dailyusage
+			lowestDay = day
+		}
+
 		// Add to the total daily usage
 		totalDailykWh += dailyusage
 
@@ -45,9 +56,11 @@ func main() {
 		totalDays += 1
 	}
 
-	fmt.Println("Total kWh usage:", totalkWh)
-	fmt.Println("Average hourly kWh:", totalkWh/totalDataPoints)
-	fmt.Println("Average daily kWh:", totalDailykWh/totalDays)
+	fmt.Printf("Total kWh usage: %.03f\r\n", totalkWh)
+	fmt.Printf("Average hourly kWh: %.03f\r\n", totalkWh/totalDataPoints)
+	fmt.Printf("Average daily kWh: %.03f\r\n", totalDailykWh/totalDays)
+	fmt.Printf("Lowest daily kWh: %.03f on %s\r\n", lowestDaykWh, lowestDay)
+	fmt.Printf("Highest daily kWh: %.03f on %s\r\n", highestDaykWh, highestDay)
 	fmt.Println("Total days:", totalDays)
 	fmt.Println("Total data points:", totalDataPoints)
 }
