@@ -18,7 +18,7 @@ func readData(powerFile string) [][]PowerData {
 		panic(err)
 	}
 
-	data := make([][]PowerData, len(lines)/24 +1)
+	data := make([][]PowerData, len(lines)/24+1)
 	var previousDay time.Time
 	var currentDay time.Time
 	var dayCount int
@@ -27,23 +27,25 @@ func readData(powerFile string) [][]PowerData {
 	previousDay, _ = time.Parse("1/2/2006 3:04:05 PM", "1/1/1900 0:00:00 PM")
 	currentDay, _ = time.Parse("1/2/2006 3:04:05 PM", "1/1/1900 0:00:00 PM")
 
+// Loop for every line in the file
 	for _, line := range lines {
 		kilowatt, _ := strconv.ParseFloat(line[1], 64) // Convert the kWh section to float64
-		currentDay, _ = time.Parse("1/2/2006 3:04:05 PM", line[0])
+		currentDay, _ = time.Parse("1/2/2006 3:04:05 PM", line[0]) // Convert date/time section to time.Time
 
+// If the current day IS the previous day continue appending data to that day
 		if ok := dateCheck(previousDay, currentDay); ok != false {
 			data[dayCount] = append(data[dayCount], PowerData{
-				date: currentDay,
+				date: currentDay.Format("2006-01-02"),
 				kWh:  kilowatt,
 			})
 		} else {
 			dayCount += 1
 			data[dayCount] = make([]PowerData, 0)
 			data[dayCount] = append(data[dayCount], PowerData{
-				date: currentDay,
+				date: currentDay.Format("2006-01-02"),
 				kWh:  kilowatt,
 			})
-			previousDay = currentDay
+			previousDay = currentDay // Reset the previous day and continue
 		}
 	}
 
