@@ -74,6 +74,6 @@ func main() {
 
 	// Loop for each hour and print the average kWh usage for that hour
 	for x, y := range hourlykWh {
-		fmt.Printf("Hour: %d | Usage: %.03f\r\n", x, y/totalDays)
+		fmt.Printf("Hour: %02d | Usage: %.03f\r\n", x, y/totalDays)
 	}
 }
