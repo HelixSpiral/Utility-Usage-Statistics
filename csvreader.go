@@ -18,7 +18,7 @@ func readData(powerFile string) [][]PowerData {
 		panic(err)
 	}
 
-	data := make([][]PowerData, len(lines)/24+1)
+	data := make([][]PowerData, len(lines))
 	var previousDay time.Time
 	var currentDay time.Time
 	var dayCount int
