@@ -5,7 +5,8 @@ This is part of an on going project of researching the viability of getting sola
 
 ## Usage
 Run in a directory with a file named PowerData.csv
-Sample data should be a csv file in the following format:
+
+Power data should be a csv file in the following format:
 
 ````
 1/19/2018 12:00:00 AM,0.18
