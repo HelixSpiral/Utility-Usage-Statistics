@@ -1,2 +1,3 @@
 # Ignore the real power data file
-PowerData.csv
+*.csv
+!SampleData.csv
