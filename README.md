@@ -4,7 +4,7 @@ Take historical kWh usage and return averages and other data
 This is part of an on going project of researching the viability of getting solar panels
 
 ## Usage
-Run in a directory with a file named SampleData.csv
+Run in a directory with a file named PowerData.csv
 Sample data should be a csv file in the following format:
 
 ````

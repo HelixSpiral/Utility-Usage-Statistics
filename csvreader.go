@@ -35,14 +35,14 @@ func readData(powerFile string) [][]PowerData {
 		// If the current day IS the previous day continue appending data to that day
 		if ok := dateCheck(previousDay, currentDay); ok != false {
 			data[dayCount] = append(data[dayCount], PowerData{
-				date: currentDay.Format("2006-01-02"),
+				date: currentDay,
 				kWh:  kilowatt,
 			})
 		} else {
 			dayCount += 1
 			data[dayCount] = make([]PowerData, 0)
 			data[dayCount] = append(data[dayCount], PowerData{
-				date: currentDay.Format("2006-01-02"),
+				date: currentDay,
 				kWh:  kilowatt,
 			})
 			previousDay = currentDay // Reset the previous day and continue
