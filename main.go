@@ -23,15 +23,10 @@ func main() {
 	var highestDay string
 
 	lowestDaykWh, highestDaykWh := 100.00, 0.0 // We default lowestDay to 100 and highestDay to 0
-	dailykWh := make(map[string]float64) // Track daily
-	hourlykWh := make([]float64, 24) // Track hourly
-	highestHour := make([]float64, 24) // Track highest seen per hour
-	lowestHour := make([]float64, 24) // Track seen per hour
-
-	// Initialize  lowestHour to 100 so the first thing we find will always be lower.
-	for x := range lowestHour {
-		lowestHour[x] = 100
-	}
+	dailykWh := make(map[string]float64)       // Track daily
+	hourlykWh := make(map[string]float64)      // Track hourly
+	highestHour := make(map[string]float64)    // Track highest seen per hour
+	lowestHour := make(map[string]float64)     // Track lowest seen per hour
 
 	// Read the data from the csv
 	data := readData("PowerData.csv")
@@ -39,19 +34,24 @@ func main() {
 	// Loop for each day
 	for _, dayData := range data {
 		// Loop for each hour
-		for hour, hourData := range dayData {
+		for _, hourData := range dayData {
+			// Check to see if the map for that lowestHour exists, if not create it with the default value of 100
+			if _, ok := lowestHour[hourData.date.Format("03:04:05 PM")]; !ok {
+				lowestHour[hourData.date.Format("03:04:05 PM")] = 100
+			}
+
 			// Add the kWh usage to the totals
 			totalkWh += hourData.kWh
 			dailykWh[hourData.date.Format("01/02/2006")] += hourData.kWh
 
 			// Track the totals by hour as well
-			hourlykWh[hour] += hourData.kWh
-			if hourData.kWh > highestHour[hour] {
-				highestHour[hour] = hourData.kWh
+			hourlykWh[hourData.date.Format("03:04:05 PM")] += hourData.kWh
+			if hourData.kWh > highestHour[hourData.date.Format("03:04:05 PM")] {
+				highestHour[hourData.date.Format("03:04:05 PM")] = hourData.kWh
 			}
 
-			if hourData.kWh < lowestHour[hour] && hourData.kWh > 0 {
-				lowestHour[hour] = hourData.kWh
+			if hourData.kWh < lowestHour[hourData.date.Format("03:04:05 PM")] && hourData.kWh > 0 {
+				lowestHour[hourData.date.Format("03:04:05 PM")] = hourData.kWh
 			}
 
 			// Increase the data point total
@@ -89,6 +89,6 @@ func main() {
 
 	// Loop for each hour and print the average kWh usage for that hour
 	for x, y := range hourlykWh {
-		fmt.Printf("Hour: %02d | Usage: %.03f, Highest: %.03f | Lowest: %.03f\r\n", x, y/totalDays, highestHour[x], lowestHour[x])
+		fmt.Printf("Hour: %v | Usage: %.03f, Highest: %.03f | Lowest: %.03f\r\n", x, y/totalDays, highestHour[x], lowestHour[x])
 	}
 }
