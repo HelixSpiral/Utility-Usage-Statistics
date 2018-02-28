@@ -18,7 +18,7 @@ func readData(powerFile string) [][]PowerData {
 		panic(err)
 	}
 
-	data := make([][]PowerData, len(lines))
+	data := make([][]PowerData, 1)
 	var previousDay time.Time
 	var currentDay time.Time
 	var dayCount int
@@ -39,8 +39,8 @@ func readData(powerFile string) [][]PowerData {
 				kWh:  kilowatt,
 			})
 		} else {
+			data = append(data, nil)
 			dayCount += 1
-			data[dayCount] = make([]PowerData, 0)
 			data[dayCount] = append(data[dayCount], PowerData{
 				date: currentDay,
 				kWh:  kilowatt,
