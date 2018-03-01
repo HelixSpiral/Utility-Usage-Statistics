@@ -4,91 +4,75 @@
 package main
 
 import (
-	"fmt"
-	"time"
+	"fmt"  // Needed to print output
+	"sync" // Needed for WaitGroups
+	"time" // Needed for time.Time
 )
 
+// Populated from the csv files
 type PowerData struct {
 	date time.Time
 	kWh  float64
 }
 
+// Populated from Calculations.go
+type PowerDataReturn struct {
+	filePath   string // Path of the file
+	lowestDay  string // Day the lowest kWh was on
+	highestDay string // Day the highest kWh was on
+
+	totalkWh         float64 // Total kWh used
+	averageDailykWh  float64 // Average daily kWh used
+	averageHourlykWh float64 // Average hourly kWh used
+	lowestDailykWh   float64 // Lowest daily kWh found
+	highestDailykWh  float64 // Highest daily kWh found
+	totalDays        float64 // Total days in the file
+	totalDataPoints  float64 // Total data points in the file
+
+	hourlykWh   map[string]float64 // Hourly data
+	lowestHour  map[string]float64 // Lowest kWh at each hour
+	highestHour map[string]float64 // Highest kWh at each hour
+}
+
 func main() {
-	// Setup some variables
-	var totalkWh float64
-	var totalDataPoints float64
-	var totalDailykWh float64
-	var totalDays float64
-	var lowestDay string
-	var highestDay string
+	var inputFiles []string // List of the input files we have
+	var wg sync.WaitGroup   // Setup a waitgroup for the go routines
 
-	lowestDaykWh, highestDaykWh := 100.00, 0.0 // We default lowestDay to 100 and highestDay to 0
-	dailykWh := make(map[string]float64)       // Track daily
-	hourlykWh := make(map[string]float64)      // Track hourly
-	highestHour := make(map[string]float64)    // Track highest seen per hour
-	lowestHour := make(map[string]float64)     // Track lowest seen per hour
+	var outputInfo []PowerDataReturn
 
-	// Read the data from the csv
-	data := readData("PowerData.csv")
+	// Folder for input files
+	inputFolder := "D:\\GitHub\\PowerCalculations\\Input"
 
-	// Loop for each day
-	for _, dayData := range data {
-		// Loop for each hour
-		for _, hourData := range dayData {
-			// Check to see if the map for that lowestHour exists, if not create it with the default value of 100
-			if _, ok := lowestHour[hourData.date.Format("03:04:05 PM")]; !ok {
-				lowestHour[hourData.date.Format("03:04:05 PM")] = 100
-			}
+	// Get all the files we want to take input from
+	inputFiles = returnInputFiles(inputFolder)
 
-			// Add the kWh usage to the totals
-			totalkWh += hourData.kWh
-			dailykWh[hourData.date.Format("01/02/2006")] += hourData.kWh
+	// Loop for each input file we stored
+	for x := range inputFiles {
+		wg.Add(1) // Add one to the waitgroup
 
-			// Track the totals by hour as well
-			hourlykWh[hourData.date.Format("03:04:05 PM")] += hourData.kWh
-			if hourData.kWh > highestHour[hourData.date.Format("03:04:05 PM")] {
-				highestHour[hourData.date.Format("03:04:05 PM")] = hourData.kWh
-			}
+		// Run this function inside a go routine so we can do it concurrently.
+		go func(x int) {
+			data := readData(inputFiles[x])
+			outputInfo = append(outputInfo, runCalculations(inputFiles[x], data, &wg))
+		}(x)
 
-			if hourData.kWh < lowestHour[hourData.date.Format("03:04:05 PM")] && hourData.kWh > 0 {
-				lowestHour[hourData.date.Format("03:04:05 PM")] = hourData.kWh
-			}
-
-			// Increase the data point total
-			totalDataPoints += 1
-		}
 	}
 
-	// Loop for each day
-	for day, dailyusage := range dailykWh {
-		if dailyusage > highestDaykWh {
-			highestDaykWh = dailyusage
-			highestDay = day
+	// Wait for the go routines to finish and then print
+	wg.Wait()
+
+	// Loop the slice of PowerDataReturns and provide output.
+	for x := range outputInfo {
+		fmt.Println("Power data for file:", outputInfo[x].filePath)
+		fmt.Printf("Total kWh usage: %.03f\r\n", outputInfo[x].totalkWh)
+		fmt.Printf("Average daily kWh: %.03f\r\n", outputInfo[x].averageDailykWh)
+		fmt.Printf("Average hourly kWh: %.03f\r\n", outputInfo[x].averageHourlykWh)
+		fmt.Printf("Lowest daily kWh: %.03f on %s\r\n", outputInfo[x].lowestDailykWh, outputInfo[x].lowestDay)
+		fmt.Printf("Highest daily kWh: %.03f on %s\r\n", outputInfo[x].highestDailykWh, outputInfo[x].highestDay)
+
+		// Loop for each hour and print hour-specific data.
+		for y, z := range outputInfo[x].hourlykWh {
+			fmt.Printf("Hour: %v | Usage: %.03f, Highest: %.03f | Lowest: %.03f\r\n", y, z/outputInfo[x].totalDays, outputInfo[x].highestHour[y], outputInfo[x].lowestHour[y])
 		}
-
-		if dailyusage < lowestDaykWh && dailyusage > 0 {
-			lowestDaykWh = dailyusage
-			lowestDay = day
-		}
-
-		// Add to the total daily usage
-		totalDailykWh += dailyusage
-
-		// Increase the number of days
-		totalDays += 1
-	}
-
-	// Print the data
-	fmt.Printf("Total kWh usage: %.03f\r\n", totalkWh)
-	fmt.Printf("Average hourly kWh: %.03f\r\n", totalkWh/totalDataPoints)
-	fmt.Printf("Average daily kWh: %.03f\r\n", totalDailykWh/totalDays)
-	fmt.Printf("Lowest daily kWh: %.03f on %s\r\n", lowestDaykWh, lowestDay)
-	fmt.Printf("Highest daily kWh: %.03f on %s\r\n", highestDaykWh, highestDay)
-	fmt.Println("Total days:", totalDays)
-	fmt.Println("Total data points:", totalDataPoints)
-
-	// Loop for each hour and print the average kWh usage for that hour
-	for x, y := range hourlykWh {
-		fmt.Printf("Hour: %v | Usage: %.03f, Highest: %.03f | Lowest: %.03f\r\n", x, y/totalDays, highestHour[x], lowestHour[x])
 	}
 }
