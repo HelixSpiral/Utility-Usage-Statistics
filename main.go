@@ -4,9 +4,10 @@
 package main
 
 import (
-	"fmt"  // Needed to print output
-	"sync" // Needed for WaitGroups
-	"time" // Needed for time.Time
+	"fmt"    // Needed to print output
+	"regexp" // Needed for regexs
+	"sync"   // Needed for WaitGroups
+	"time"   // Needed for time.Time
 )
 
 // Populated from the csv files
@@ -61,18 +62,16 @@ func main() {
 	// Wait for the go routines to finish and then print
 	wg.Wait()
 
-	// Loop the slice of PowerDataReturns and provide output.
+	// Loop the slice of PowerDataReturns
 	for x := range outputInfo {
-		fmt.Println("Power data for file:", outputInfo[x].filePath)
-		fmt.Printf("Total kWh usage: %.03f\r\n", outputInfo[x].totalkWh)
-		fmt.Printf("Average daily kWh: %.03f\r\n", outputInfo[x].averageDailykWh)
-		fmt.Printf("Average hourly kWh: %.03f\r\n", outputInfo[x].averageHourlykWh)
-		fmt.Printf("Lowest daily kWh: %.03f on %s\r\n", outputInfo[x].lowestDailykWh, outputInfo[x].lowestDay)
-		fmt.Printf("Highest daily kWh: %.03f on %s\r\n", outputInfo[x].highestDailykWh, outputInfo[x].highestDay)
+		// Find the file name
+		re := regexp.MustCompile("(?i)Input\\\\(.+)\\.csv")
+		outputFile := re.FindStringSubmatch(outputInfo[x].filePath)
 
-		// Loop for each hour and print hour-specific data.
-		for y, z := range outputInfo[x].hourlykWh {
-			fmt.Printf("Hour: %v | Usage: %.03f, Highest: %.03f | Lowest: %.03f\r\n", y, z/outputInfo[x].totalDays, outputInfo[x].highestHour[y], outputInfo[x].lowestHour[y])
+		// Write to the file.
+		err := writeFile(fmt.Sprintf("Output\\\\%s.txt", outputFile[1]), outputInfo[x])
+		if err != nil {
+			fmt.Println("Error:", err)
 		}
 	}
 }

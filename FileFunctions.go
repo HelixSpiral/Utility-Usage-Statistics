@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"         // Needed to write to the output file
 	"fmt"           // Used for printing error messages
 	"os"            // Needed for os.FileInfo
 	"path/filepath" // Needed for filepath.Walk
@@ -38,4 +39,34 @@ func returnInputFiles(inputFolder string) []string {
 	}
 
 	return inputFiles
+}
+
+// Write to the file
+func writeFile(file string, data PowerDataReturn) error {
+	// Create the file
+	createdFile, err := os.Create(file)
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
+	defer createdFile.Close()
+
+	// Create a new writer for the file
+	write := bufio.NewWriter(createdFile)
+
+	// Write the data to the file
+	write.WriteString(fmt.Sprintf("Power data for file: %s\r\n", data.filePath))
+	write.WriteString(fmt.Sprintf("Total kWh usage: %.03f\r\n", data.totalkWh))
+	write.WriteString(fmt.Sprintf("Average daily kWh: %.03f\r\n", data.averageDailykWh))
+	write.WriteString(fmt.Sprintf("Average hourly kWh: %.03f\r\n", data.averageHourlykWh))
+	write.WriteString(fmt.Sprintf("Lowest daily kWh: %.03f on %s\r\n", data.lowestDailykWh, data.lowestDay))
+	write.WriteString(fmt.Sprintf("Highest daily kWh: %.03f on %s\r\n", data.highestDailykWh, data.highestDay))
+	for y, z := range data.hourlykWh {
+		write.WriteString(fmt.Sprintf("Hour: %v | Usage: %.03f, Highest: %.03f | Lowest: %.03f\r\n", y, z/data.totalDays, data.highestHour[y], data.lowestHour[y]))
+	}
+
+	// Flush
+	write.Flush()
+
+	// Return no error
+	return nil
 }
