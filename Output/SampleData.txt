@@ -1,30 +1,30 @@
-Power data for file: SampleData.csv
+Power data for file: D:\Github\PowerCalculations\Input\SampleData.csv
 Total kWh usage: 359.690
 Average daily kWh: 10.900
 Average hourly kWh: 0.454
 Lowest daily kWh: 7.746 on 02/12/2018
 Highest daily kWh: 20.761 on 01/21/2018
-Hour: 04:00:00 PM | Usage: 0.357, Highest: 1.082 | Lowest: 0.072
-Hour: 05:00:00 PM | Usage: 0.680, Highest: 2.455 | Lowest: 0.351
-Hour: 01:00:00 AM | Usage: 0.239, Highest: 1.352 | Lowest: 0.051
-Hour: 02:00:00 AM | Usage: 0.193, Highest: 0.426 | Lowest: 0.051
-Hour: 11:00:00 AM | Usage: 0.477, Highest: 2.908 | Lowest: 0.072
-Hour: 12:00:00 PM | Usage: 0.567, Highest: 2.389 | Lowest: 0.069
-Hour: 01:00:00 PM | Usage: 0.417, Highest: 3.200 | Lowest: 0.058
-Hour: 02:00:00 PM | Usage: 0.379, Highest: 1.911 | Lowest: 0.051
-Hour: 07:00:00 PM | Usage: 0.739, Highest: 3.272 | Lowest: 0.279
-Hour: 09:00:00 PM | Usage: 0.469, Highest: 1.317 | Lowest: 0.182
-Hour: 09:00:00 AM | Usage: 0.391, Highest: 2.554 | Lowest: 0.061
-Hour: 10:00:00 AM | Usage: 0.538, Highest: 3.160 | Lowest: 0.118
-Hour: 06:00:00 PM | Usage: 0.678, Highest: 3.998 | Lowest: 0.313
-Hour: 10:00:00 PM | Usage: 0.587, Highest: 1.544 | Lowest: 0.054
-Hour: 11:00:00 PM | Usage: 0.290, Highest: 1.011 | Lowest: 0.060
 Hour: 05:00:00 AM | Usage: 0.430, Highest: 1.581 | Lowest: 0.058
+Hour: 08:00:00 AM | Usage: 0.283, Highest: 0.912 | Lowest: 0.054
+Hour: 09:00:00 AM | Usage: 0.391, Highest: 2.554 | Lowest: 0.061
+Hour: 01:00:00 PM | Usage: 0.417, Highest: 3.200 | Lowest: 0.058
+Hour: 03:00:00 PM | Usage: 0.461, Highest: 3.218 | Lowest: 0.083
+Hour: 06:00:00 PM | Usage: 0.678, Highest: 3.998 | Lowest: 0.313
+Hour: 09:00:00 PM | Usage: 0.469, Highest: 1.317 | Lowest: 0.182
+Hour: 11:00:00 PM | Usage: 0.290, Highest: 1.011 | Lowest: 0.060
+Hour: 04:00:00 AM | Usage: 0.239, Highest: 0.991 | Lowest: 0.063
+Hour: 12:00:00 PM | Usage: 0.567, Highest: 2.389 | Lowest: 0.069
+Hour: 02:00:00 PM | Usage: 0.379, Highest: 1.911 | Lowest: 0.051
+Hour: 04:00:00 PM | Usage: 0.357, Highest: 1.082 | Lowest: 0.072
+Hour: 08:00:00 PM | Usage: 0.579, Highest: 2.385 | Lowest: 0.314
+Hour: 12:00:00 AM | Usage: 0.214, Highest: 0.377 | Lowest: 0.055
+Hour: 01:00:00 AM | Usage: 0.239, Highest: 1.352 | Lowest: 0.051
+Hour: 11:00:00 AM | Usage: 0.477, Highest: 2.908 | Lowest: 0.072
+Hour: 05:00:00 PM | Usage: 0.680, Highest: 2.455 | Lowest: 0.351
+Hour: 10:00:00 PM | Usage: 0.587, Highest: 1.544 | Lowest: 0.054
+Hour: 02:00:00 AM | Usage: 0.193, Highest: 0.426 | Lowest: 0.051
+Hour: 03:00:00 AM | Usage: 0.220, Highest: 0.790 | Lowest: 0.055
 Hour: 06:00:00 AM | Usage: 0.715, Highest: 1.587 | Lowest: 0.174
 Hour: 07:00:00 AM | Usage: 0.759, Highest: 2.075 | Lowest: 0.124
-Hour: 08:00:00 AM | Usage: 0.283, Highest: 0.912 | Lowest: 0.054
-Hour: 03:00:00 PM | Usage: 0.461, Highest: 3.218 | Lowest: 0.083
-Hour: 12:00:00 AM | Usage: 0.214, Highest: 0.377 | Lowest: 0.055
-Hour: 03:00:00 AM | Usage: 0.220, Highest: 0.790 | Lowest: 0.055
-Hour: 04:00:00 AM | Usage: 0.239, Highest: 0.991 | Lowest: 0.063
-Hour: 08:00:00 PM | Usage: 0.579, Highest: 2.385 | Lowest: 0.314
+Hour: 10:00:00 AM | Usage: 0.538, Highest: 3.160 | Lowest: 0.118
+Hour: 07:00:00 PM | Usage: 0.739, Highest: 3.272 | Lowest: 0.279

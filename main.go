@@ -8,6 +8,8 @@ import (
 	"regexp" // Needed for regexs
 	"sync"   // Needed for WaitGroups
 	"time"   // Needed for time.Time
+	//"os"
+	"path/filepath"
 )
 
 // Populated from the csv files
@@ -42,7 +44,8 @@ func main() {
 	var outputInfo []PowerDataReturn
 
 	// Folder for input files
-	inputFolder := "D:\\GitHub\\PowerCalculations\\Input"
+	dir, _ := filepath.Abs("./")
+	inputFolder := fmt.Sprintf("%s\\\\Input", dir)
 
 	// Get all the files we want to take input from
 	inputFiles = returnInputFiles(inputFolder)
