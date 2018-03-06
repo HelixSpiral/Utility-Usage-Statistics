@@ -4,12 +4,12 @@
 package main
 
 import (
-	"fmt"    // Needed to print output
-	"regexp" // Needed for regexs
-	"sync"   // Needed for WaitGroups
-	"time"   // Needed for time.Time
-	//"os"
-	"path/filepath"
+	"fmt"           // Needed to print output
+	"os"            // Needed for os.Stat
+	"path/filepath" // Needed to get the current working directory
+	"regexp"        // Needed for regexs
+	"sync"          // Needed for WaitGroups
+	"time"          // Needed for time.Time
 )
 
 // Populated from the csv files
@@ -35,6 +35,8 @@ type PowerDataReturn struct {
 	hourlykWh   map[string]float64 // Hourly data
 	lowestHour  map[string]float64 // Lowest kWh at each hour
 	highestHour map[string]float64 // Highest kWh at each hour
+
+	sortedKeys []string // String for the sorted hourlykWh map
 }
 
 func main() {
@@ -43,8 +45,10 @@ func main() {
 
 	var outputInfo []PowerDataReturn
 
-	// Folder for input files
+	// Get the current directory
 	dir, _ := filepath.Abs("./")
+
+	// Add \Input to the current path for the Input folder.
 	inputFolder := fmt.Sprintf("%s\\\\Input", dir)
 
 	// Get all the files we want to take input from
@@ -71,10 +75,20 @@ func main() {
 		re := regexp.MustCompile("(?i)Input\\\\(.+)\\.csv")
 		outputFile := re.FindStringSubmatch(outputInfo[x].filePath)
 
+		fmt.Printf("Processing file %s...", outputFile[1])
+
+		// Check to see if the output file already exists, if it does ignore that file and don't recalculate
+		if _, err := os.Stat(fmt.Sprintf("Output\\\\%s.txt", outputFile[1])); err == nil {
+			fmt.Println("Skipped - output file already found")
+			continue
+		}
+
 		// Write to the file.
 		err := writeFile(fmt.Sprintf("Output\\\\%s.txt", outputFile[1]), outputInfo[x])
 		if err != nil {
 			fmt.Println("Error:", err)
 		}
+
+		fmt.Println("Done")
 	}
 }

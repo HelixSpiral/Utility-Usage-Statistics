@@ -43,6 +43,7 @@ func returnInputFiles(inputFolder string) []string {
 
 // Write to the file
 func writeFile(file string, data PowerDataReturn) error {
+	timePM := false
 	// Create the file
 	createdFile, err := os.Create(file)
 	if err != nil {
@@ -60,8 +61,19 @@ func writeFile(file string, data PowerDataReturn) error {
 	write.WriteString(fmt.Sprintf("Average hourly kWh: %.03f\r\n", data.averageHourlykWh))
 	write.WriteString(fmt.Sprintf("Lowest daily kWh: %.03f on %s\r\n", data.lowestDailykWh, data.lowestDay))
 	write.WriteString(fmt.Sprintf("Highest daily kWh: %.03f on %s\r\n", data.highestDailykWh, data.highestDay))
-	for y, z := range data.hourlykWh {
-		write.WriteString(fmt.Sprintf("Hour: %v | Usage: %.03f, Highest: %.03f | Lowest: %.03f\r\n", y, z/data.totalDays, data.highestHour[y], data.lowestHour[y]))
+
+	// Bit of a hack to print AM before PM
+Loop:
+	for _, y := range data.sortedKeys {
+		if strings.Contains(y, "AM") && timePM != true {
+			write.WriteString(fmt.Sprintf("Hour: %v | Usage: %.03f, Highest: %.03f | Lowest: %.03f\r\n", y, data.hourlykWh[y]/data.totalDays, data.highestHour[y], data.lowestHour[y]))
+			if y == "12:00:00 AM" {
+				timePM = true
+				goto Loop
+			}
+		} else if strings.Contains(y, "PM") && timePM == true {
+			write.WriteString(fmt.Sprintf("Hour: %v | Usage: %.03f, Highest: %.03f | Lowest: %.03f\r\n", y, data.hourlykWh[y]/data.totalDays, data.highestHour[y], data.lowestHour[y]))
+		}
 	}
 
 	// Flush

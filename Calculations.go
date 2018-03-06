@@ -1,6 +1,9 @@
 package main
 
-import "sync"
+import (
+	"sort" // Needed to sort the hourlykWh map
+	"sync" // Needed for WaitGroups
+)
 
 // Run the calculations on the file and return a struct of PowerDataReturn
 func runCalculations(path string, data [][]PowerData, wg *sync.WaitGroup) PowerDataReturn {
@@ -64,6 +67,8 @@ func runCalculations(path string, data [][]PowerData, wg *sync.WaitGroup) PowerD
 		totalDays += 1
 	}
 
+	sortedKeys := sortKeys(hourlykWh)
+
 	wg.Done() // Tell the wg we're done.
 
 	// Return the struct
@@ -81,5 +86,19 @@ func runCalculations(path string, data [][]PowerData, wg *sync.WaitGroup) PowerD
 		hourlykWh:        hourlykWh,
 		highestHour:      highestHour,
 		lowestHour:       lowestHour,
+		sortedKeys:       sortedKeys,
 	}
+}
+
+// Sort the keys for printing in order later
+func sortKeys(m map[string]float64) []string {
+	var returnKeys []string
+
+	for x := range m {
+		returnKeys = append(returnKeys, x)
+	}
+
+	sort.Strings(returnKeys)
+
+	return returnKeys
 }
