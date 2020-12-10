@@ -1,93 +1,88 @@
 package main
 
 import (
-	"sort" // Needed to sort the hourlykWh map
-	"sync" // Needed for WaitGroups
+	"fmt"
+	"sort"
+	"time"
 )
 
-// Run the calculations on the file and return a struct of PowerDataReturn
-func runCalculations(path string, data [][]PowerData, wg *sync.WaitGroup) PowerDataReturn {
-	var totalkWh float64
-	var totalDataPoints float64
-	var totalDailykWh float64
-	var totalDays float64
-	var lowestDay string
-	var highestDay string
+// Process the data and return the statistics
+func processData(meterData map[string]map[string]map[string][]meterReading) UtilityDataStatistics {
+	var utilityStatistics UtilityDataStatistics
+	utilityStatistics.lowestDailykWh = float64(100000)
+	utilityStatistics.lowestMonthlykWh = float64(100000)
+	utilityStatistics.lowestYearlykWh = float64(100000)
+	utilityStatistics.highestDailykWh = float64(0)
+	utilityStatistics.highestMonthlykWh = float64(0)
+	utilityStatistics.highestYearlykWh = float64(0)
 
-	lowestDaykWh, highestDaykWh := 100.00, 0.0 // We default lowestDay to 100 and highestDay to 0
-	dailykWh := make(map[string]float64)       // Track daily
-	hourlykWh := make(map[string]float64)      // Track hourly
-	highestHour := make(map[string]float64)    // Track highest seen per hour
-	lowestHour := make(map[string]float64)     // Track lowest seen per hour
+	utilityStatistics.hourlykWh = make(map[string]float64)
+	utilityStatistics.dailykWh = make(map[string]float64)
+	utilityStatistics.lowestHour = make(map[string]float64)
+	utilityStatistics.highestHour = make(map[string]float64)
 
-	// Loop for all the lines in data
-	for _, dayData := range data {
-		// Loop for each hour
-		for _, hourData := range dayData {
-			// Check to see if the map for that lowestHour exists, if not create it with the default value of 100
-			if _, ok := lowestHour[hourData.date.Format("03:04:05 PM")]; !ok {
-				lowestHour[hourData.date.Format("03:04:05 PM")] = 100
+	// Loop for all the data we have
+	for year, yearData := range meterData {
+		yearlykWh := float64(0)
+		fmt.Println("Processing Year:", year)
+		for month, monthData := range yearData {
+			monthlykWh := float64(0)
+			fmt.Println("Processing Month:", month)
+			for day, daydata := range monthData {
+				fmt.Println("Processing Day:", day)
+				dailykWh := float64(0)
+				utilityStatistics.totalDays++
+				for _, hourData := range daydata {
+
+					// Check to see if the map exists, if not make it
+					if _, ok := utilityStatistics.lowestHour[time.Unix(hourData.dateTime, 0).Format("2006/01/02")]; !ok {
+						utilityStatistics.lowestHour[time.Unix(hourData.dateTime, 0).Format("2006/01/02")] = 100
+					}
+
+					// Add the kWh usage to the totals
+					utilityStatistics.totalkWh += hourData.value
+					dailykWh += hourData.value
+
+					utilityStatistics.dailykWh[time.Unix(hourData.dateTime, 0).Format("2006/01/02")] += hourData.value
+
+					// Track the totals by hour as well
+					utilityStatistics.hourlykWh[time.Unix(hourData.dateTime, 0).Format("15:04:05 PM")] += hourData.value
+					if hourData.value > utilityStatistics.highestHour[time.Unix(hourData.dateTime, 0).Format("2006/01/02")] {
+						utilityStatistics.highestHour[time.Unix(hourData.dateTime, 0).Format("2006/01/02")] = hourData.value
+					}
+
+					if hourData.value < utilityStatistics.lowestHour[time.Unix(hourData.dateTime, 0).Format("2006/01/02")] && hourData.value > 0 {
+						utilityStatistics.lowestHour[time.Unix(hourData.dateTime, 0).Format("2006/01/02")] = hourData.value
+					}
+
+					// Increase the data point total
+					utilityStatistics.totalDataPoints++
+				}
+				if dailykWh < utilityStatistics.lowestDailykWh && dailykWh > 0 {
+					utilityStatistics.lowestDailykWh = dailykWh
+				}
+				if dailykWh > utilityStatistics.highestDailykWh {
+					utilityStatistics.highestDailykWh = dailykWh
+				}
+				monthlykWh += dailykWh
 			}
-
-			// Add the kWh usage to the totals
-			totalkWh += hourData.kWh
-			dailykWh[hourData.date.Format("01/02/2006")] += hourData.kWh
-
-			// Track the totals by hour as well
-			hourlykWh[hourData.date.Format("03:04:05 PM")] += hourData.kWh
-			if hourData.kWh > highestHour[hourData.date.Format("03:04:05 PM")] {
-				highestHour[hourData.date.Format("03:04:05 PM")] = hourData.kWh
+			if monthlykWh < utilityStatistics.lowestMonthlykWh {
+				utilityStatistics.lowestMonthlykWh = monthlykWh
 			}
-
-			if hourData.kWh < lowestHour[hourData.date.Format("03:04:05 PM")] && hourData.kWh > 0 {
-				lowestHour[hourData.date.Format("03:04:05 PM")] = hourData.kWh
+			if monthlykWh > utilityStatistics.highestMonthlykWh {
+				utilityStatistics.highestMonthlykWh = monthlykWh
 			}
-
-			// Increase the data point total
-			totalDataPoints += 1
+			yearlykWh += monthlykWh
+		}
+		if yearlykWh < utilityStatistics.lowestYearlykWh {
+			utilityStatistics.lowestYearlykWh = yearlykWh
+		}
+		if yearlykWh > utilityStatistics.highestYearlykWh {
+			utilityStatistics.highestYearlykWh = yearlykWh
 		}
 	}
 
-	// Loop for each day
-	for day, dailyusage := range dailykWh {
-		if dailyusage > highestDaykWh {
-			highestDaykWh = dailyusage
-			highestDay = day
-		}
-
-		if dailyusage < lowestDaykWh && dailyusage > 0 {
-			lowestDaykWh = dailyusage
-			lowestDay = day
-		}
-
-		// Add to the total daily usage
-		totalDailykWh += dailyusage
-
-		// Increase the number of days
-		totalDays += 1
-	}
-
-	sortedKeys := sortKeys(hourlykWh)
-
-	wg.Done() // Tell the wg we're done.
-
-	// Return the struct
-	return PowerDataReturn{
-		filePath:         path,
-		lowestDay:        lowestDay,
-		highestDay:       highestDay,
-		totalkWh:         totalkWh,
-		averageDailykWh:  totalDailykWh / totalDays,
-		averageHourlykWh: totalkWh / totalDataPoints,
-		lowestDailykWh:   lowestDaykWh,
-		highestDailykWh:  highestDaykWh,
-		totalDays:        totalDays,
-		totalDataPoints:  totalDataPoints,
-		hourlykWh:        hourlykWh,
-		highestHour:      highestHour,
-		lowestHour:       lowestHour,
-		sortedKeys:       sortedKeys,
-	}
+	return utilityStatistics
 }
 
 // Sort the keys for printing in order later

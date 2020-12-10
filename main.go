@@ -1,49 +1,25 @@
 // Author: Shawn Smith <ShawnSmith0828@gmail.com>
-// Description: Used for running some calculations on kWh usage
+// Description: Provides some utility usage statistics to assist in alternative energy source sizing
 
 package main
 
 import (
-	"fmt"           // Needed to print output
-	"os"            // Needed for os.Stat
-	"path/filepath" // Needed to get the current working directory
-	"regexp"        // Needed for regexs
-	"sync"          // Needed for WaitGroups
-	"time"          // Needed for time.Time
+	"fmt"
+	"path/filepath"
+	"strconv"
+	"time"
+
+	"github.com/HelixSpiral/greenbuttonxml"
 )
 
 // Populated from the csv files
-type PowerData struct {
-	date time.Time
-	kWh  float64
-}
-
-// Populated from Calculations.go
-type PowerDataReturn struct {
-	filePath   string // Path of the file
-	lowestDay  string // Day the lowest kWh was on
-	highestDay string // Day the highest kWh was on
-
-	totalkWh         float64 // Total kWh used
-	averageDailykWh  float64 // Average daily kWh used
-	averageHourlykWh float64 // Average hourly kWh used
-	lowestDailykWh   float64 // Lowest daily kWh found
-	highestDailykWh  float64 // Highest daily kWh found
-	totalDays        float64 // Total days in the file
-	totalDataPoints  float64 // Total data points in the file
-
-	hourlykWh   map[string]float64 // Hourly data
-	lowestHour  map[string]float64 // Lowest kWh at each hour
-	highestHour map[string]float64 // Highest kWh at each hour
-
-	sortedKeys []string // String for the sorted hourlykWh map
+type meterReading struct {
+	dateTime int64
+	value    float64
 }
 
 func main() {
 	var inputFiles []string // List of the input files we have
-	var wg sync.WaitGroup   // Setup a waitgroup for the go routines
-
-	var outputInfo []PowerDataReturn
 
 	// Get the current directory
 	dir, _ := filepath.Abs("./")
@@ -54,41 +30,45 @@ func main() {
 	// Get all the files we want to take input from
 	inputFiles = returnInputFiles(inputFolder)
 
-	// Loop for each input file we stored
-	for x := range inputFiles {
-		wg.Add(1) // Add one to the waitgroup
+	meterData := getMeterData(inputFiles)
 
-		// Run this function inside a go routine so we can do it concurrently.
-		go func(x int) {
-			data := readData(inputFiles[x])
-			outputInfo = append(outputInfo, runCalculations(inputFiles[x], data, &wg))
-		}(x)
+	processedData := processData(meterData)
+
+	writeFile("processedData.txt", processedData)
+}
+
+func getMeterData(files []string) map[string]map[string]map[string][]meterReading {
+	meterData := make(map[string]map[string]map[string][]meterReading)
+
+	for _, file := range files {
+		greenButtonUtilityData := greenbuttonxml.ParseGreenButtonXML(file)
+		// Loop for all the readings we got
+		for _, y := range greenButtonUtilityData.ServicePoint.Channel.ReadingData {
+
+			// Parse the date and grab the year, month, and day values
+			dateTime, _ := time.Parse("1/2/2006 15:04:05 PM", y.DateTime)
+			yearValue := dateTime.Format("2006")
+			monthValue := dateTime.Format("January")
+			dayValue := dateTime.Format("02")
+
+			// Create maps if they don't exist
+			if _, ok := meterData[yearValue]; !ok {
+				meterData[yearValue] = make(map[string]map[string][]meterReading)
+			}
+			if _, ok := meterData[yearValue][monthValue]; !ok {
+				meterData[yearValue][monthValue] = make(map[string][]meterReading)
+			}
+
+			// Get the reading from the meter and append it to the slice
+			meterValue, _ := strconv.ParseFloat(y.Value, 64)
+			meterData[yearValue][monthValue][dayValue] = append(meterData[yearValue][monthValue][dayValue], meterReading{
+				dateTime: dateTime.Unix(),
+				value:    meterValue,
+			})
+
+		}
 
 	}
 
-	// Wait for the go routines to finish and then print
-	wg.Wait()
-
-	// Loop the slice of PowerDataReturns
-	for x := range outputInfo {
-		// Find the file name
-		re := regexp.MustCompile("(?i)Input\\\\(.+)\\.csv")
-		outputFile := re.FindStringSubmatch(outputInfo[x].filePath)
-
-		fmt.Printf("Processing file %s...", outputFile[1])
-
-		// Check to see if the output file already exists, if it does ignore that file and don't recalculate
-		if _, err := os.Stat(fmt.Sprintf("Output\\\\%s.txt", outputFile[1])); err == nil {
-			fmt.Println("Skipped - output file already found")
-			continue
-		}
-
-		// Write to the file.
-		err := writeFile(fmt.Sprintf("Output\\\\%s.txt", outputFile[1]), outputInfo[x])
-		if err != nil {
-			fmt.Println("Error:", err)
-		}
-
-		fmt.Println("Done")
-	}
+	return meterData
 }
