@@ -1,30 +1,55 @@
-Power data for file: D:\Github\PowerCalculations\Input\SampleData.csv
-Total kWh usage: 359.690
-Average daily kWh: 10.900
-Average hourly kWh: 0.454
-Lowest daily kWh: 7.746 on 02/12/2018
-Highest daily kWh: 20.761 on 01/21/2018
-Hour: 01:00:00 AM | Usage: 0.239, Highest: 1.352 | Lowest: 0.051
-Hour: 02:00:00 AM | Usage: 0.193, Highest: 0.426 | Lowest: 0.051
-Hour: 03:00:00 AM | Usage: 0.220, Highest: 0.790 | Lowest: 0.055
-Hour: 04:00:00 AM | Usage: 0.239, Highest: 0.991 | Lowest: 0.063
-Hour: 05:00:00 AM | Usage: 0.430, Highest: 1.581 | Lowest: 0.058
-Hour: 06:00:00 AM | Usage: 0.715, Highest: 1.587 | Lowest: 0.174
-Hour: 07:00:00 AM | Usage: 0.759, Highest: 2.075 | Lowest: 0.124
-Hour: 08:00:00 AM | Usage: 0.283, Highest: 0.912 | Lowest: 0.054
-Hour: 09:00:00 AM | Usage: 0.391, Highest: 2.554 | Lowest: 0.061
-Hour: 10:00:00 AM | Usage: 0.538, Highest: 3.160 | Lowest: 0.118
-Hour: 11:00:00 AM | Usage: 0.477, Highest: 2.908 | Lowest: 0.072
-Hour: 12:00:00 AM | Usage: 0.214, Highest: 0.377 | Lowest: 0.055
-Hour: 01:00:00 PM | Usage: 0.417, Highest: 3.200 | Lowest: 0.058
-Hour: 02:00:00 PM | Usage: 0.379, Highest: 1.911 | Lowest: 0.051
-Hour: 03:00:00 PM | Usage: 0.461, Highest: 3.218 | Lowest: 0.083
-Hour: 04:00:00 PM | Usage: 0.357, Highest: 1.082 | Lowest: 0.072
-Hour: 05:00:00 PM | Usage: 0.680, Highest: 2.455 | Lowest: 0.351
-Hour: 06:00:00 PM | Usage: 0.678, Highest: 3.998 | Lowest: 0.313
-Hour: 07:00:00 PM | Usage: 0.739, Highest: 3.272 | Lowest: 0.279
-Hour: 08:00:00 PM | Usage: 0.579, Highest: 2.385 | Lowest: 0.314
-Hour: 09:00:00 PM | Usage: 0.469, Highest: 1.317 | Lowest: 0.182
-Hour: 10:00:00 PM | Usage: 0.587, Highest: 1.544 | Lowest: 0.054
-Hour: 11:00:00 PM | Usage: 0.290, Highest: 1.011 | Lowest: 0.060
-Hour: 12:00:00 PM | Usage: 0.567, Highest: 2.389 | Lowest: 0.069
+Processed 25800 hours in 1075 days
+Total usage: 9934.265 kWh
+Lowest daily usage: 0.253 kWh
+Highest daily usage: 26.439 kWh
+----------
+Summary - 2017/February
+2017/02/01: Total: 22.795 kWh | Lowest Hour: 0.188 | Highest Hour: 3.632
+2017/02/02: Total: 10.765 kWh | Lowest Hour: 0.146 | Highest Hour: 1.823
+2017/02/03: Total: 11.190 kWh | Lowest Hour: 0.188 | Highest Hour: 1.693
+2017/02/04: Total: 11.958 kWh | Lowest Hour: 0.200 | Highest Hour: 1.806
+2017/02/05: Total: 7.428 kWh | Lowest Hour: 0.165 | Highest Hour: 0.574
+2017/02/06: Total: 10.457 kWh | Lowest Hour: 0.183 | Highest Hour: 0.823
+2017/02/07: Total: 16.940 kWh | Lowest Hour: 0.175 | Highest Hour: 3.367
+2017/02/08: Total: 18.066 kWh | Lowest Hour: 0.141 | Highest Hour: 4.504
+2017/02/09: Total: 16.401 kWh | Lowest Hour: 0.168 | Highest Hour: 2.255
+2017/02/10: Total: 12.693 kWh | Lowest Hour: 0.233 | Highest Hour: 1.474
+2017/02/11: Total: 11.620 kWh | Lowest Hour: 0.207 | Highest Hour: 1.434
+2017/02/12: Total: 15.550 kWh | Lowest Hour: 0.168 | Highest Hour: 2.125
+2017/02/13: Total: 11.883 kWh | Lowest Hour: 0.164 | Highest Hour: 1.957
+2017/02/14: Total: 9.187 kWh | Lowest Hour: 0.154 | Highest Hour: 1.605
+2017/02/15: Total: 9.445 kWh | Lowest Hour: 0.136 | Highest Hour: 1.769
+2017/02/16: Total: 8.579 kWh | Lowest Hour: 0.155 | Highest Hour: 1.533
+2017/02/17: Total: 7.671 kWh | Lowest Hour: 0.065 | Highest Hour: 1.796
+2017/02/18: Total: 6.920 kWh | Lowest Hour: 0.149 | Highest Hour: 1.297
+2017/02/19: Total: 12.082 kWh | Lowest Hour: 0.115 | Highest Hour: 3.147
+2017/02/20: Total: 9.066 kWh | Lowest Hour: 0.203 | Highest Hour: 0.702
+2017/02/21: Total: 11.827 kWh | Lowest Hour: 0.162 | Highest Hour: 2.365
+2017/02/22: Total: 16.901 kWh | Lowest Hour: 0.098 | Highest Hour: 2.618
+2017/02/23: Total: 6.352 kWh | Lowest Hour: 0.049 | Highest Hour: 1.413
+2017/02/24: Total: 8.086 kWh | Lowest Hour: 0.050 | Highest Hour: 1.383
+2017/02/25: Total: 4.781 kWh | Lowest Hour: 0.065 | Highest Hour: 0.442
+2017/02/26: Total: 7.878 kWh | Lowest Hour: 0.152 | Highest Hour: 0.564
+2017/02/27: Total: 10.933 kWh | Lowest Hour: 0.151 | Highest Hour: 2.436
+2017/02/28: Total: 12.559 kWh | Lowest Hour: 0.158 | Highest Hour: 3.059
+Summary - 2017/March
+2017/03/01: Total: 9.564 kWh | Lowest Hour: 0.077 | Highest Hour: 1.840
+2017/03/02: Total: 7.499 kWh | Lowest Hour: 0.050 | Highest Hour: 1.480
+2017/03/03: Total: 9.584 kWh | Lowest Hour: 0.153 | Highest Hour: 1.713
+2017/03/04: Total: 16.627 kWh | Lowest Hour: 0.192 | Highest Hour: 4.003
+2017/03/05: Total: 7.073 kWh | Lowest Hour: 0.174 | Highest Hour: 0.653
+2017/03/06: Total: 8.210 kWh | Lowest Hour: 0.167 | Highest Hour: 0.552
+2017/03/07: Total: 10.188 kWh | Lowest Hour: 0.082 | Highest Hour: 1.982
+2017/03/08: Total: 11.533 kWh | Lowest Hour: 0.115 | Highest Hour: 2.123
+2017/03/09: Total: 8.270 kWh | Lowest Hour: 0.085 | Highest Hour: 1.671
+2017/03/10: Total: 8.646 kWh | Lowest Hour: 0.143 | Highest Hour: 1.927
+2017/03/11: Total: 14.270 kWh | Lowest Hour: 0.226 | Highest Hour: 2.149
+2017/03/12: Total: 9.488 kWh | Lowest Hour: 0.213 | Highest Hour: 0.631
+2017/03/13: Total: 8.928 kWh | Lowest Hour: 0.159 | Highest Hour: 0.653
+2017/03/14: Total: 20.310 kWh | Lowest Hour: 0.161 | Highest Hour: 4.091
+2017/03/15: Total: 9.725 kWh | Lowest Hour: 0.064 | Highest Hour: 1.399
+2017/03/16: Total: 7.113 kWh | Lowest Hour: 0.100 | Highest Hour: 2.662
+2017/03/17: Total: 7.981 kWh | Lowest Hour: 0.068 | Highest Hour: 2.829
+2017/03/18: Total: 12.217 kWh | Lowest Hour: 0.105 | Highest Hour: 2.948
+2017/03/19: Total: 10.620 kWh | Lowest Hour: 0.172 | Highest Hour: 2.496
+2017/03/20: Total: 10.744 kWh | Lowest Hour: 0.131 | Highest Hour: 2.118
