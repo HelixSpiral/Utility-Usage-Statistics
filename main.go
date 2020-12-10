@@ -34,7 +34,7 @@ func main() {
 
 	processedData := processData(meterData)
 
-	writeFile("processedData.txt", processedData)
+	writeFile("Output\\processedData.txt", processedData)
 }
 
 func getMeterData(files []string) map[string]map[string]map[string][]meterReading {
